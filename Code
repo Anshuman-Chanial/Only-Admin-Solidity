@@ -1,0 +1,29 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.26;
+
+contract onlyAdmin{
+	string public currentAdminName = "Robbie";
+	string adminPass = "qwerty";
+	address adminAddress;
+	
+    constructor() {
+        adminAddress = msg.sender;
+    }
+	
+	modifier isAdmin(string memory passkey) {
+		require(msg.sender == adminAddress, "Only Admin can update the name of Admin");
+		require(keccak256(abi.encodePacked(adminPass)) == keccak256(abi.encodePacked(passkey)), "Password entered for Admin does not match");
+		_;
+	}
+
+    // keccak256 hash the input string
+    // abi.encodePacked(string) is used to encode the strings into bytes
+	
+	function updateAdmin(string memory newAdmin, string memory passkey) public isAdmin(passkey) {
+		currentAdminName = newAdmin;
+	}
+	
+	function updatePassword(string memory oldPass, string memory newPass) public isAdmin(oldPass) {
+		adminPass = newPass;
+	}
+}
